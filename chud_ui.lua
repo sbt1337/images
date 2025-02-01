@@ -34,7 +34,7 @@ function Section.new(container, name)
     self.Container.Parent = container
 
     self.Label = Instance.new("TextLabel")
-    self.Label.Font = Enum.Font.Zekton
+    self.Label.Font = Enum.Font.SourceSans
     self.Label.TextColor3 = Color3.fromRGB(185, 185, 185)
     self.Label.Text = name
     self.Label.BackgroundTransparency = 1
@@ -56,7 +56,7 @@ end
 function Section:AddLabel(text, options)
     options = options or {}
     local label = Instance.new("TextLabel")
-    label.Font = Enum.Font.Zekton
+    label.Font = Enum.Font.SourceSans
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Text = text or ""
     label.BackgroundTransparency = 1
@@ -78,7 +78,7 @@ function Section:AddToggle(name, options)
     toggle.Parent = self.Container
 
     local label = Instance.new("TextLabel")
-    label.Font = Enum.Font.Zekton
+    label.Font = Enum.Font.SourceSans
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Text = name
     label.BackgroundTransparency = 1
@@ -123,7 +123,7 @@ function Section:AddSlider(name, options)
     sliderFrame.Parent = self.Container
 
     local label = Instance.new("TextLabel")
-    label.Font = Enum.Font.Zekton
+    label.Font = Enum.Font.SourceSans
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Text = name
     label.BackgroundTransparency = 1
@@ -160,7 +160,7 @@ function Section:AddSlider(name, options)
     createStroke(knob, 2)
 
     local valueLabel = Instance.new("TextLabel")
-    valueLabel.Font = Enum.Font.Zekton
+    valueLabel.Font = Enum.Font.SourceSans
     valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     valueLabel.Text = tostring(defaultValue) .. (options.Suffix or "")
     valueLabel.BackgroundTransparency = 1
@@ -211,20 +211,54 @@ end
 
 function Section:AddDropdown(name, options)
     options = options or {}
-    local dropdownFrame = Instance.new("Frame")
-    dropdownFrame.Size = UDim2.new(1, 0, 0, 55)
-    dropdownFrame.BackgroundTransparency = 1
-    dropdownFrame.Parent = self.Container
+    local Dropdown = Instance.new("Frame")
+    Dropdown.Name = "Dropdown"
+    Dropdown.BackgroundTransparency = 1
+    Dropdown.Position = UDim2.new(0, 0, 0.198, 0)
+    Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Dropdown.Size = UDim2.new(0, 265, 0, 55)
+    Dropdown.BorderSizePixel = 0
+    Dropdown.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
+    Dropdown.Parent = self.Container
+
+    local MainDropdownFrame = Instance.new("Frame")
+    MainDropdownFrame.Name = "MainDropdownFrame"
+    MainDropdownFrame.Position = UDim2.new(0, 0, 0.344, 0)
+    MainDropdownFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    MainDropdownFrame.Size = UDim2.new(0, 265, 0, 30)
+    MainDropdownFrame.BorderSizePixel = 0
+    MainDropdownFrame.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
+    MainDropdownFrame.Parent = Dropdown
+
+    local Outline_MainDropdown = Instance.new("UIStroke")
+    Outline_MainDropdown.Thickness = 2
+    Outline_MainDropdown.LineJoinMode = Enum.LineJoinMode.Miter
+    Outline_MainDropdown.Name = "Outline_MainDropdown"
+    Outline_MainDropdown.Parent = MainDropdownFrame
+
+    local DropdownOptions = Instance.new("Frame")
+    DropdownOptions.Visible = false
+    DropdownOptions.Name = "DropdownOptions"
+    DropdownOptions.Size = UDim2.new(0, 265, 0, 30)
+    DropdownOptions.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    DropdownOptions.BorderSizePixel = 0
+    DropdownOptions.AutomaticSize = Enum.AutomaticSize.Y
+    DropdownOptions.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
+    DropdownOptions.Parent = MainDropdownFrame
+
+    local UIListLayout_Dropdown = Instance.new("UIListLayout")
+    UIListLayout_Dropdown.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout_Dropdown.Parent = DropdownOptions
 
     local label = Instance.new("TextLabel")
-    label.Font = Enum.Font.Zekton
+    label.Font = Enum.Font.SourceSans
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.Text = name
     label.BackgroundTransparency = 1
     label.Size = UDim2.new(0, 200, 0, 15)
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Position = UDim2.new(0, 0, 0, 0)
-    label.Parent = dropdownFrame
+    label.Parent = Dropdown
 
     createStroke(label, 1.25)
 
@@ -236,39 +270,30 @@ function Section:AddDropdown(name, options)
     mainDropdown.TextColor3 = Color3.fromRGB(165, 165, 165)
     mainDropdown.TextXAlignment = Enum.TextXAlignment.Left
     mainDropdown.AutoButtonColor = false
-    mainDropdown.Parent = dropdownFrame
+    mainDropdown.Parent = Dropdown
 
     createStroke(mainDropdown, 2)
 
-    local dropdownOptions = Instance.new("Frame")
-    dropdownOptions.Size = UDim2.new(0, 265, 0, 0)
-    dropdownOptions.Position = UDim2.new(0, -15, 1, 0)
-    dropdownOptions.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
-    dropdownOptions.Visible = false
-    dropdownOptions.Parent = mainDropdown
-
-    createStroke(dropdownOptions, 2)
-
-    local uiListLayout = Instance.new("UIListLayout")
-    uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    uiListLayout.Parent = dropdownOptions
-
     for index, item in ipairs(options.Items or {}) do
-        local optionButton = Instance.new("TextButton")
-        optionButton.Size = UDim2.new(1, 0, 0, 30)
-        optionButton.Text = item
-        optionButton.TextColor3 = (item == options.Default) and Color3.fromRGB(227, 139, 81) or Color3.fromRGB(255, 255, 255)
-        optionButton.BackgroundColor3 = (item == options.Default) and Color3.fromRGB(46, 46, 46) or Color3.fromRGB(42, 42, 42)
-        optionButton.TextXAlignment = Enum.TextXAlignment.Left
-        optionButton.AutoButtonColor = false
-        optionButton.Parent = dropdownOptions
+        local Option1Selected = Instance.new("TextButton")
+        Option1Selected.Font = Enum.Font.SourceSans
+        Option1Selected.TextColor3 = (item == options.Default) and Color3.fromRGB(227, 139, 81) or Color3.fromRGB(255, 255, 255)
+        Option1Selected.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        Option1Selected.Text = item
+        Option1Selected.AutoButtonColor = false
+        Option1Selected.Name = "Option" .. index
+        Option1Selected.Size = UDim2.new(0, 265, 0, 30)
+        Option1Selected.BorderSizePixel = 0
+        Option1Selected.TextSize = 13
+        Option1Selected.BackgroundColor3 = (item == options.Default) and Color3.fromRGB(46, 46, 46) or Color3.fromRGB(42, 42, 42)
+        Option1Selected.Parent = DropdownOptions
 
-        createStroke(optionButton, 1.25)
+        createStroke(Option1Selected, 1.25)
 
-        optionButton.MouseButton1Click:Connect(function()
+        Option1Selected.MouseButton1Click:Connect(function()
             mainDropdown.Text = "Selected: " .. item
-            dropdownOptions.Visible = false
-            for _, btn in ipairs(dropdownOptions:GetChildren()) do
+            DropdownOptions.Visible = false
+            for _, btn in ipairs(DropdownOptions:GetChildren()) do
                 if btn:IsA("TextButton") then
                     btn.TextColor3 = (btn.Text == item) and Color3.fromRGB(227, 139, 81) or Color3.fromRGB(255, 255, 255)
                     btn.BackgroundColor3 = (btn.Text == item) and Color3.fromRGB(46, 46, 46) or Color3.fromRGB(42, 42, 42)
@@ -281,7 +306,7 @@ function Section:AddDropdown(name, options)
     end
 
     mainDropdown.MouseButton1Click:Connect(function()
-        dropdownOptions.Visible = not dropdownOptions.Visible
+        DropdownOptions.Visible = not DropdownOptions.Visible
     end)
 
     return {
